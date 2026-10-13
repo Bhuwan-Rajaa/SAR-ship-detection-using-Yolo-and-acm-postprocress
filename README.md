@@ -112,7 +112,7 @@ necessary inputs for reproducing the current report and feature reconstruction.
 ## Verification
 
 ```powershell
-python -m unittest test test_deterministic_acm test_project_paths
+python test 
 python eval.py
 ```
 
