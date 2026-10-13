@@ -1,0 +1,58 @@
+{
+  "image": "D:\\CAPSTONE_HYPOTHESIS\\hrsid_yolo\\test\\images\\P0001_0_800_10190_10990.png",
+  "model": "D:\\CAPSTONE_HYPOTHESIS\\runs\\baseline_yolov8s\\weights\\best.pt",
+  "device": "0",
+  "yolo_only": {
+    "threshold": 0.32315291166305543,
+    "detections": [
+      {
+        "box_xyxy": [
+          156.06430053710938,
+          93.96981048583984,
+          248.0318603515625,
+          125.33672332763672
+        ],
+        "confidence": 0.794758677482605,
+        "class": "ship"
+      },
+      {
+        "box_xyxy": [
+          242.49224853515625,
+          77.91268920898438,
+          279.2403564453125,
+          88.29164123535156
+        ],
+        "confidence": 0.5361284017562866,
+        "class": "ship"
+      }
+    ]
+  },
+  "yolo_acm": {
+    "image": "D:\\CAPSTONE_HYPOTHESIS\\hrsid_yolo\\test\\images\\P0001_0_800_10190_10990.png",
+    "threshold": 0.4286361799911476,
+    "detections": [
+      {
+        "box_xyxy": [
+          156.06430053710938,
+          93.96981048583984,
+          248.0318603515625,
+          125.33672332763672
+        ],
+        "yolo_confidence": 0.794758677482605,
+        "acm_score": 0.9337138421083531,
+        "class": "ship"
+      },
+      {
+        "box_xyxy": [
+          242.49224853515625,
+          77.91268920898438,
+          279.2403564453125,
+          88.29164123535156
+        ],
+        "yolo_confidence": 0.5361284017562866,
+        "acm_score": 0.7419460522667544,
+        "class": "ship"
+      }
+    ]
+  }
+}

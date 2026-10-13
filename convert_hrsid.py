@@ -26,8 +26,9 @@ from collections import defaultdict
 
 # ─── Configuration ───────────────────────────────────────────────────────────
 
-HRSID_ROOT = Path(r"d:\CAPSTONE_HYPOTHESIS\hrsid")
-OUTPUT_ROOT = Path(r"d:\CAPSTONE_HYPOTHESIS\hrsid_yolo")
+from project_paths import RAW_DATASET_ROOT, DATASET_ROOT
+HRSID_ROOT = RAW_DATASET_ROOT
+OUTPUT_ROOT = DATASET_ROOT
 IMAGES_DIR = HRSID_ROOT / "images"
 TRAIN_JSON = HRSID_ROOT / "annotations" / "train2017.json"
 TEST_JSON = HRSID_ROOT / "annotations" / "test2017.json"

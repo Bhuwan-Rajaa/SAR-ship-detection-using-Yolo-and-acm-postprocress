@@ -18,7 +18,7 @@ from ultralytics import YOLO
 
 from predict_yolov8s_acm import predict_image
 
-ROOT = Path(__file__).resolve().parent
+from project_paths import ROOT, DATASET_ROOT, RUNS_ROOT, EVALUATION_ROOT
 
 
 def add_title(image, title):
@@ -31,16 +31,16 @@ def add_title(image, title):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("image", nargs="?", type=Path, help="Image path; defaults to an included HRSID example")
-    parser.add_argument("--model", type=Path, default=ROOT / "runs/baseline_yolov8s/weights/best.pt")
+    parser.add_argument("--model", type=Path, default=RUNS_ROOT / "baseline_yolov8s/weights/best.pt")
     parser.add_argument("--calibrator", type=Path,
-                        default=ROOT / "evaluation_results/yolov8s_deterministic_refined/acm_calibrator.pkl")
+                        default=EVALUATION_ROOT / "yolov8s_deterministic_refined/acm_calibrator.pkl")
     parser.add_argument("--device", default="0", help="GPU index (default: 0); use cpu for CPU inference")
     parser.add_argument("--output", type=Path, help="Output directory; defaults to a new timestamped demo folder")
     parser.add_argument("--show", action="store_true", help="Display the comparison; press any key to close")
     args = parser.parse_args()
 
     if args.image is None:
-        examples = sorted((ROOT / "hrsid_yolo/test/images").glob("*.png"))
+        examples = sorted((DATASET_ROOT / "test/images").glob("*.png"))
         if not examples:
             parser.error("No included example found. Provide an image path.")
         args.image = examples[0]

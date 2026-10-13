@@ -9,12 +9,13 @@ import cv2
 import numpy as np
 
 from target_experiment import ROOT, FEATURES, write_json
+from project_paths import CODE_ROOT, DATASET_ROOT, EVALUATION_ROOT
 from generate_detection_analysis import extract_detection_features
 
 
 def main():
-    source = ROOT / "evaluation_results/yolov8s_target"
-    output = ROOT / "evaluation_results/yolov8s_deterministic"
+    source = EVALUATION_ROOT / "yolov8s_target"
+    output = EVALUATION_ROOT / "yolov8s_deterministic"
     output.mkdir(parents=True, exist_ok=True)
     for name in ("configuration.json", "frozen_selection.json", "split_audit.json"):
         shutil.copy2(source / name, output / name)
@@ -31,7 +32,7 @@ def main():
             for i, im in enumerate(images):
                 if im["image_id"] in completed:
                     continue
-                path = ROOT / f"hrsid_yolo/{split}/images" / (im["image_id"]+".png")
+                path = DATASET_ROOT / split / "images" / (im["image_id"]+".png")
                 gray = cv2.imread(str(path), cv2.IMREAD_GRAYSCALE)
                 if gray is None:
                     raise ValueError(f"Cannot read {path}")
@@ -51,8 +52,8 @@ def main():
         "extractor": "deterministic_acm.chan_vese", "iterations": 45,
         "boxes_source": str(source), "detector_retrained": False,
         "selection_policy": "Same validation partitions, frozen baseline, and predeclared refinement search"})
-    subprocess.run([sys.executable, "-u", str(ROOT / "refine_acm.py"), "--source", str(output),
-                    "--output", str(ROOT / "evaluation_results/yolov8s_deterministic_refined")], check=True)
+    subprocess.run([sys.executable, "-u", str(CODE_ROOT / "refine_acm.py"), "--source", str(output),
+                    "--output", str(EVALUATION_ROOT / "yolov8s_deterministic_refined")], check=True)
 
 
 if __name__ == "__main__":

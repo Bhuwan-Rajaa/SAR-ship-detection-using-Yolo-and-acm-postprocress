@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 
 from target_experiment import ROOT, FEATURES, calibrated_scores
+from project_paths import RUNS_ROOT, EVALUATION_ROOT
 from generate_detection_analysis import extract_detection_features
 from refine_acm import scores_for
 
@@ -52,9 +53,9 @@ def predict_image(model, classifier, selection, path, device="0", imgsz=800):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path, help="Image file or directory")
-    parser.add_argument("--model", type=Path, default=ROOT / "runs/baseline_yolov8s/weights/best.pt")
+    parser.add_argument("--model", type=Path, default=RUNS_ROOT / "baseline_yolov8s/weights/best.pt")
     parser.add_argument("--calibrator", type=Path,
-                        default=ROOT / "evaluation_results/yolov8s_deterministic_refined/acm_calibrator.pkl")
+                        default=EVALUATION_ROOT / "yolov8s_deterministic_refined/acm_calibrator.pkl")
     parser.add_argument("--output", type=Path, default=ROOT / "predicted_examples/yolov8s_acm")
     parser.add_argument("--device", default="0")
     parser.add_argument("--imgsz", type=int, default=800)

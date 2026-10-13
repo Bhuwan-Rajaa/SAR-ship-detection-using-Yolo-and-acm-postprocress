@@ -21,7 +21,8 @@ from sklearn.preprocessing import StandardScaler
 
 from generate_detection_analysis import compute_iou, extract_detection_features
 
-ROOT = Path(__file__).resolve().parent
+from project_paths import (ROOT, CODE_ROOT, DATASET_ROOT, RUNS_ROOT,
+                           EVALUATION_ROOT, resolve_saved_path)
 FEATURES = ["conf", "energy_reduction_rel", "contrast", "elongation",
             "compactness", "area_ratio", "contour_stability", "solidity",
             "mask_to_obb_area_ratio", "intensity_mean", "intensity_variance"]
@@ -35,7 +36,7 @@ def audit_splits(dataset):
     """Prioritize test, then validation; exclude duplicate images from fitting splits."""
     dataset = dataset.resolve()
     config = yaml.safe_load((dataset / "hrsid.yaml").read_text())
-    configured_root = Path(config.get("path", dataset))
+    configured_root = resolve_saved_path(config.get("path", dataset))
     if not configured_root.is_absolute():
         configured_root = dataset / configured_root
     for split in ("train", "val", "test"):
@@ -211,8 +212,8 @@ def main():
     parser.add_argument("--batch", type=int, default=4)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--name", default="baseline_yolov8s")
-    parser.add_argument("--dataset", type=Path, default=ROOT / "hrsid_yolo")
-    parser.add_argument("--output", type=Path, default=ROOT / "evaluation_results" / "yolov8s_target")
+    parser.add_argument("--dataset", type=Path, default=DATASET_ROOT)
+    parser.add_argument("--output", type=Path, default=EVALUATION_ROOT / "yolov8s_target")
     parser.add_argument("--device", default="0")
     parser.add_argument("--imgsz", type=int, default=800)
     parser.add_argument("--candidate-conf", type=float, default=0.05)
@@ -237,19 +238,19 @@ def main():
     audited_yaml = (args.output / "audited_dataset.yaml").resolve()
     audited_yaml.write_text(yaml.safe_dump(data_config), encoding="utf-8")
     if args.resume or not args.train:
-        saved_args = ROOT / "runs" / args.name / "args.yaml"
+        saved_args = RUNS_ROOT / args.name / "args.yaml"
         previous = yaml.safe_load(saved_args.read_text())
-        previous_data = yaml.safe_load(Path(previous["data"]).read_text())
+        previous_data = yaml.safe_load(resolve_saved_path(previous["data"]).read_text())
         for split in ("train", "val", "test"):
-            previous_list = Path(previous_data[split])
-            if not previous_list.is_file() or previous_list.read_text().splitlines() != audit[split]["paths"]:
+            previous_list = resolve_saved_path(previous_data[split])
+            if not previous_list.is_file() or [str(resolve_saved_path(p)) for p in previous_list.read_text().splitlines()] != audit[split]["paths"]:
                 raise ValueError("Prior model split provenance differs; use --train with a fresh --name")
     write_json(args.output / "configuration.json", {k: str(v) if isinstance(v, Path) else v
                                                     for k, v in vars(args).items()})
     feature_provenance = {"extractor": "deterministic_acm.chan_vese", "iterations": 45}
     write_json(args.output / "feature_provenance.json", feature_provenance)
     if args.train:
-        command = [sys.executable, "-u", str(ROOT / "train_baseline.py"),
+        command = [sys.executable, "-u", str(CODE_ROOT / "train_baseline.py"),
                    "--epochs", str(args.epochs), "--batch", str(args.batch),
                    "--workers", str(args.workers), "--name", args.name,
                    "--imgsz", str(args.imgsz), "--device", args.device,
@@ -258,7 +259,7 @@ def main():
             command.append("--resume")
         subprocess.run(command, check=True, cwd=ROOT)
     from ultralytics import YOLO
-    model_path = ROOT / "runs" / args.name / "weights" / "best.pt"
+    model_path = RUNS_ROOT / args.name / "weights" / "best.pt"
     model = YOLO(str(model_path))
     val = collect(model, args.dataset, "val", args, audit["val"]["paths"])
     write_json(args.output / "validation_candidates.json", val)

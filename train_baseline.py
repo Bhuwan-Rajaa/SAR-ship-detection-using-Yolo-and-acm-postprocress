@@ -18,15 +18,15 @@ from ultralytics import YOLO
 
 # --- Configuration -----------------------------------------------------------
 
-ROOT = Path(__file__).resolve().parent
-DATASET_YAML = ROOT / "hrsid_yolo" / "hrsid.yaml"
-PROJECT_DIR = ROOT / "runs"
+from project_paths import ROOT, DATASET_ROOT, RUNS_ROOT, PRETRAINED_MODEL
+DATASET_YAML = DATASET_ROOT / "hrsid.yaml"
+PROJECT_DIR = RUNS_ROOT
 EXPERIMENT_NAME = "baseline_yolov8s"
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train YOLOv8s on HRSID")
-    parser.add_argument("--model", type=str, default="yolov8s.pt",
+    parser.add_argument("--model", type=str, default=str(PRETRAINED_MODEL),
                         help="Pretrained model to start from (default: yolov8s.pt)")
     parser.add_argument("--data", type=Path, default=DATASET_YAML)
     parser.add_argument("--device", type=str, default="0", help="CUDA GPU index")

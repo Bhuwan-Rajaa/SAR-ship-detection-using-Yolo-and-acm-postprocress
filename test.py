@@ -11,6 +11,7 @@ import numpy as np
 
 from target_experiment import metrics, choose_acm, target_status, sweep, audit_splits
 from refine_acm import engineered_features, scores_for
+from project_paths import EVALUATION_ROOT
 
 
 class TargetMetricsTests(unittest.TestCase):
@@ -88,8 +89,7 @@ class TargetMetricsTests(unittest.TestCase):
 
 def render_result():
     evaluation_path = (
-        Path(__file__).resolve().parent
-        / "evaluation_results/yolov8s_deterministic_refined/results.json"
+        EVALUATION_ROOT / "yolov8s_deterministic_refined/results.json"
     )
     evaluation = json.loads(evaluation_path.read_text(encoding="utf-8"))
     image_count = evaluation["baseline"]["images"]

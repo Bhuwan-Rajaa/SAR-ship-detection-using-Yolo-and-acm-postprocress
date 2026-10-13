@@ -272,9 +272,12 @@ def extract_detection_features(
 
 
 def main():
+    from project_paths import DATASET_ROOT, RAW_DATASET_ROOT, RUNS_ROOT, EVALUATION_ROOT
     parser = argparse.ArgumentParser(description="Generate per-detection ACM analysis CSV")
     parser.add_argument("--split", type=str, default="val", choices=["val", "test"])
-    parser.add_argument("--model", type=str, default=str(Path(__file__).resolve().parent / "runs/baseline_yolov8s/weights/best.pt"))
+    parser.add_argument("--model", type=str, default=str(RUNS_ROOT / "baseline_yolov8s/weights/best.pt"))
+    parser.add_argument("--dataset", type=Path, default=DATASET_ROOT)
+    parser.add_argument("--annotations", type=Path, default=RAW_DATASET_ROOT / "annotations")
     parser.add_argument("--imgsz", type=int, default=800)
     parser.add_argument("--device", type=str, default="0")
     parser.add_argument("--conf", type=float, default=0.10, help="YOLO confidence cutoff for candidate extraction")
@@ -285,14 +288,14 @@ def main():
     args = parser.parse_args()
 
     # Paths
-    split_dir = Path(f"d:/CAPSTONE_HYPOTHESIS/hrsid_yolo/{args.split}/images")
+    split_dir = args.dataset / args.split / "images"
     if args.split == "val":
-        coco_json = Path(r"d:\CAPSTONE_HYPOTHESIS\hrsid\annotations\train2017.json")
+        coco_json = args.annotations / "train2017.json"
     else:
-        coco_json = Path(r"d:\CAPSTONE_HYPOTHESIS\hrsid\annotations\test2017.json")
+        coco_json = args.annotations / "test2017.json"
 
     if args.output is None:
-        out_csv = Path(__file__).resolve().parent / "evaluation_results/yolov8s_detection_analysis" / f"{args.split}_detection_analysis.csv"
+        out_csv = EVALUATION_ROOT / "yolov8s_detection_analysis" / f"{args.split}_detection_analysis.csv"
     else:
         out_csv = Path(args.output)
     out_csv.parent.mkdir(parents=True, exist_ok=True)

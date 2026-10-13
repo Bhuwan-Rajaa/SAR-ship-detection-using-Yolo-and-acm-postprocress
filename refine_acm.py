@@ -14,6 +14,7 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from project_paths import EVALUATION_ROOT
 
 from target_experiment import (ROOT, feature_matrix, raw_scores, detection_labels,
                                sweep, choose_acm, target_status, metrics, write_json)
@@ -70,8 +71,8 @@ def evaluate_frozen(source, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, default=ROOT / "evaluation_results/yolov8s_target")
-    parser.add_argument("--output", type=Path, default=ROOT / "evaluation_results/yolov8s_refined")
+    parser.add_argument("--source", type=Path, default=EVALUATION_ROOT / "yolov8s_target")
+    parser.add_argument("--output", type=Path, default=EVALUATION_ROOT / "yolov8s_refined")
     parser.add_argument("--evaluate-frozen", action="store_true",
                         help="Evaluate saved selection without repeating calibration")
     args = parser.parse_args()

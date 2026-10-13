@@ -68,9 +68,19 @@ Thumbs.db
 
 # Local archives and generated prediction outputs
 Old_used/
-demo_results/
+demo_results/*
+!demo_results/20261013_202030_311913/
+demo_results/20261013_202030_311913/*
+!demo_results/20261013_202030_311913/*.png
+!demo_results/20261013_202030_311913/detections.json
 predicted_examples/
 
 # Evaluation artifacts and local scratch archives
-evaluation_results/
+evaluation_results/*
+!evaluation_results/yolov8_results/
+evaluation_results/yolov8_results/*
+!evaluation_results/yolov8_results/*.png
+!evaluation_results/yolov8_results/*.svg
 useless_ahh/
+Dataset/
+.publish_sar/

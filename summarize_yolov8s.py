@@ -11,13 +11,14 @@ import matplotlib.pyplot as plt
 
 from target_experiment import ROOT, raw_scores, metrics, match_labels
 from refine_acm import scores_for
+from project_paths import DATASET_ROOT, EVALUATION_ROOT, RUNS_ROOT
 
 
 def main():
-    source = ROOT / "evaluation_results/yolov8s_target"
-    refined = ROOT / "evaluation_results/yolov8s_deterministic_refined"
-    features = ROOT / "evaluation_results/yolov8s_deterministic"
-    output = ROOT / "evaluation_results/yolov8s_summary"
+    source = EVALUATION_ROOT / "yolov8s_target"
+    refined = EVALUATION_ROOT / "yolov8s_deterministic_refined"
+    features = EVALUATION_ROOT / "yolov8s_deterministic"
+    output = EVALUATION_ROOT / "yolov8s_summary"
     output.mkdir(parents=True, exist_ok=True)
     original = json.loads((source / "results.json").read_text())
     final = json.loads((refined / "results.json").read_text())
@@ -47,7 +48,7 @@ def main():
     axes[0].legend(fontsize=8)
     fig.savefig(output / "test_comparison.png", dpi=180)
     plt.close(fig)
-    training = pd.read_csv(ROOT / "runs/baseline_yolov8s/results.csv")
+    training = pd.read_csv(RUNS_ROOT / "baseline_yolov8s/results.csv")
     training.columns = training.columns.str.strip()
     fig, axis = plt.subplots(figsize=(9, 4), layout="constrained")
     for column, label in (("metrics/precision(B)", "Validation precision"),
@@ -64,7 +65,7 @@ def main():
     for index in np.linspace(0, len(test)-1, 6, dtype=int):
         im = test[index]
         example_ids.append(im["image_id"])
-        image = cv2.imread(str(ROOT / "hrsid_yolo/test/images" / (im["image_id"]+".png")))
+        image = cv2.imread(str(DATASET_ROOT / "test/images" / (im["image_id"]+".png")))
         if image is None:
             raise ValueError(f"Missing image: {im['image_id']}")
         panels = []
